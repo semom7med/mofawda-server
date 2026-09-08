@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة مفاوضة Pro - Eng : Samir m7med</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #07190b;
+            color: #ffffff;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bg-image {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;
+        }
+        .bg-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.82); z-index: 2;
+        }
+
+        .screen-box {
+            position: relative;
+            z-index: 10;
+            background: rgba(11, 28, 14, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.85);
+            border: 3px solid #d4af37;
+            max-width: 440px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .logo-area h1 { font-size: 1.6rem; color: #f4d35e; margin-bottom: 2px; text-shadow: 2px 2px 6px rgba(0,0,0,0.8); }
+        .logo-area p { font-size: 0.75rem; color: #90be6d; margin-bottom: 12px; }
+        
+        .user-profile-card {
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(5, 20, 10, 0.85); border: 2px solid #d4af37; padding: 10px 14px; border-radius: 12px; margin-bottom: 12px;
+        }
+        .user-profile-info { display: flex; align-items: center; gap: 12px; text-align: right; }
+        .profile-avatar-container {
+            width: 44px; height: 44px; border-radius: 50%; border: 2px solid #f4d35e;
+            overflow: hidden; background: #081c15; display: flex; align-items: center; justify-content: center;
+        }
+        .profile-avatar-container span { font-size: 1.3rem; }
+        .user-profile-info h3 { color: #f4d35e; font-size: 0.9rem; }
+        .user-profile-info p { color: #90be6d; font-size: 0.75rem; font-weight: bold; }
+        .btn-edit-profile {
+            background: #2d6a4f; color: #f4d35e; border: 1px solid #d4af37; padding: 4px 10px;
+            border-radius: 6px; font-size: 0.75rem; font-weight: bold; cursor: pointer;
+        }
+
+        .friends-section {
+            background: rgba(5, 20, 10, 0.8); border: 1px solid #2d6a4f; border-radius: 10px; padding: 8px; margin-bottom: 12px; text-align: right;
+        }
+        .friends-title { font-size: 0.8rem; color: #f4d35e; margin-bottom: 6px; display: flex; align-items: center; gap: 4px; }
+        .friend-row {
+            display: flex; justify-content: space-between; align-items: center; background: rgba(11, 28, 14, 0.9);
+            padding: 6px 10px; border-radius: 6px; margin-bottom: 4px; font-size: 0.78rem;
+        }
+        .friend-info span { display: block; }
+        .friend-status { font-size: 0.68rem; color: #90be6d; }
+        .btn-invite { background: #2d6a4f; color: #fff; border: none; padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; }
+
+        .tabs { display: flex; justify-content: center; margin-bottom: 12px; border-bottom: 2px solid #14381b; }
+        .tab-btn { background: none; border: none; color: #8d99ae; font-size: 0.9rem; font-weight: bold; padding: 8px 12px; cursor: pointer; }
+        .tab-btn.active { color: #f4d35e; border-bottom: 3px solid #f4d35e; }
+
+        .input-group { margin-bottom: 10px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 3px; color: #d4af37; font-size: 0.8rem; font-weight: bold; direction: ltr; }
+        .input-group input, .input-group select {
+            width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #2d6a4f;
+            background: #081c15; color: #fff; font-size: 0.85rem; text-align: center; direction: ltr;
+        }
+        
+        .avatar-selection { display: flex; justify-content: space-around; margin-bottom: 6px; }
+        .avatar-option {
+            width: 36px; height: 36px; border-radius: 50%; border: 2px solid #2d6a4f;
+            cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; background: #081c15;
+        }
+        .avatar-option.selected { border-color: #f4d35e; background: #14381b; }
+
+        .btn-action {
+            background-color: #d4af37; color: #0b132b; border: none; padding: 10px 12px;
+            font-size: 0.9rem; font-weight: bold; border-radius: 8px; cursor: pointer; width: 100%; transition: 0.3s; margin-bottom: 8px;
+        }
+        .btn-action:hover { background-color: #f4d35e; }
+
+        .btn-menu-option {
+            background-color: #2d6a4f; color: #fff; border: 2px solid #d4af37; padding: 9px 12px;
+            font-size: 0.88rem; font-weight: bold; border-radius: 8px; cursor: pointer; width: 100%; margin-bottom: 8px; display: block; text-align: center; text-decoration: none;
+        }
+        .btn-menu-option:hover { background-color: #1b4332; }
+
+        /* متجر الشحن */
+        .store-modal-box {
+            background: #0b1c0e; border: 3px solid #d4af37; padding: 16px; border-radius: 16px; text-align: center; width: 380px; max-height: 90vh; overflow-y: auto;
+        }
+        .store-title { color: #f4d35e; font-size: 1.1rem; margin-bottom: 10px; }
+        .vodafone-box {
+            border: 2px dashed #d4af37; background: rgba(5, 20, 10, 0.7); padding: 8px; border-radius: 8px; margin-bottom: 10px; text-align: center;
+        }
+        .vodafone-box span { display: block; color: #f4d35e; font-size: 0.75rem; }
+        .vodafone-box strong { font-size: 1.25rem; color: #ffb703; letter-spacing: 1px; }
+        .vodafone-box p { font-size: 0.68rem; color: #90be6d; margin-top: 3px; }
+
+        .packages-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 10px;
+        }
+        .package-card {
+            background: rgba(8, 28, 21, 0.9); border: 1px solid #2d6a4f; border-radius: 8px; padding: 8px; text-align: center; cursor: pointer;
+        }
+        .package-card.selected-pkg { border-color: #f4d35e; background: #14381b; box-shadow: 0 0 10px rgba(212,175,55,0.4); }
+        .package-card h4 { color: #f4d35e; font-size: 0.82rem; margin-bottom: 3px; }
+        .package-card p { font-size: 0.75rem; color: #fff; margin-bottom: 3px; }
+        .package-card span { font-size: 0.7rem; color: #90be6d; font-weight: bold; }
+
+        .upload-section {
+            background: rgba(5, 20, 10, 0.8); border: 1px solid #2d6a4f; border-radius: 8px; padding: 8px; margin-bottom: 10px; text-align: right;
+        }
+        .upload-section label { display: block; font-size: 0.75rem; color: #f4d35e; margin-bottom: 4px; }
+        .upload-section input[type="file"] {
+            width: 100%; background: #081c15; border: 1px solid #2d6a4f; color: #fff; padding: 4px; border-radius: 6px; font-size: 0.72rem; text-align: center;
+        }
+
+        /* نافذة غرف الأصدقاء ومفاوضتهم */
+        .friends-room-box {
+            background: #0b1c0e; border: 3px solid #d4af37; padding: 16px; border-radius: 16px; text-align: center; width: 360px; max-height: 90vh; overflow-y: auto;
+        }
+        .room-code-display {
+            background: rgba(5, 20, 10, 0.9); border: 2px dashed #d4af37; padding: 8px; border-radius: 8px; color: #f4d35e; font-size: 1.2rem; font-weight: bold; margin-bottom: 10px; letter-spacing: 2px;
+        }
+
+        /* لوحة تحكم الأدمن */
+        .admin-modal-box {
+            background: #0b1c0e; border: 3px solid #d4af37; padding: 16px; border-radius: 16px; text-align: center; width: 420px; max-height: 90vh; overflow-y: auto;
+        }
+        .admin-title { color: #f4d35e; font-size: 1.1rem; margin-bottom: 10px; font-weight: bold; }
+        .admin-section-title { font-size: 0.78rem; color: #f4d35e; text-align: right; margin-bottom: 6px; }
+        .pending-orders-box {
+            background: rgba(5, 20, 10, 0.85); border: 2px dashed #d4af37; border-radius: 8px; padding: 8px; margin-bottom: 10px; text-align: center;
+        }
+        .pending-empty { color: #90be6d; font-size: 0.75rem; padding: 6px; }
+
+        .admin-users-search {
+            width: 100%; padding: 6px; background: #081c15; border: 1px solid #2d6a4f; color: #fff; border-radius: 8px; font-size: 0.78rem; text-align: right; margin-bottom: 6px; direction: rtl;
+        }
+        .admin-user-card {
+            display: flex; justify-content: space-between; align-items: center; background: rgba(5, 20, 10, 0.9);
+            border: 1px solid #2d6a4f; padding: 6px 10px; border-radius: 8px; margin-bottom: 6px; font-size: 0.78rem; text-align: right;
+        }
+        .admin-user-info h4 { color: #f4d35e; font-size: 0.8rem; }
+        .admin-user-info p { color: #90be6d; font-size: 0.7rem; }
+        .btn-ban { background: #9b2226; color: #fff; border: none; padding: 4px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: bold; cursor: pointer; }
+        .btn-ban.banned { background: #2d6a4f; }
+
+        /* شاشة اللعب الرئيسية */
+        #gameTableScreen {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 20;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 8px 12px;
+        }
+
+        .table-header {
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(11, 28, 14, 0.95); padding: 6px 12px; border-radius: 10px; border: 2px solid #d4af37;
+            max-width: 580px; width: 100%; margin: 0 auto;
+        }
+        .player-info-card { display: flex; align-items: center; gap: 10px; }
+        .player-avatar-box { width: 34px; height: 34px; border-radius: 50%; background: #081c15; border: 2px solid #f4d35e; display: flex; align-items: center; justify-content: center; font-size: 1rem; overflow: hidden; }
+        .player-details h3 { color: #f4d35e; font-size: 0.78rem; }
+        .player-details p { color: #90be6d; font-weight: bold; font-size: 0.65rem; }
+
+        .video-grid-container {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+            max-width: 500px; width: 100%; margin: 4px auto;
+        }
+        .video-box {
+            background: rgba(5, 20, 10, 0.95); border: 2px solid #2d6a4f; border-radius: 8px; height: 62px;
+            position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-direction: column;
+        }
+        .video-box video {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: none; z-index: 1;
+        }
+        .cam-placeholder { font-size: 1rem; z-index: 2; }
+        .cam-name-tag {
+            position: absolute; bottom: 2px; right: 3px; background: rgba(0,0,0,0.8);
+            color: #f4d35e; font-size: 0.45rem; padding: 1px 4px; border-radius: 3px; font-weight: bold; z-index: 3;
+        }
+        .media-controls-overlay {
+            position: absolute; top: 2px; left: 2px; display: flex; gap: 2px; z-index: 4;
+        }
+        .media-btn {
+            background: rgba(0,0,0,0.6); border: 1px solid #d4af37; color: #fff; font-size: 0.48rem; padding: 1px 4px; border-radius: 3px; cursor: pointer;
+        }
+        .media-btn.active-cam { background: #2d6a4f; }
+        .media-btn.active-mic { background: #2d6a4f; }
+        .media-btn.muted-mic { background: #9b2226; }
+
+        .table-chat-box {
+            max-width: 480px; width: 100%; margin: 4px auto; background: rgba(5, 20, 10, 0.95);
+            border: 1px solid #2d6a4f; border-radius: 8px; padding: 6px; display: flex; flex-direction: column; height: 50px;
+        }
+        .chat-messages { flex: 1; overflow-y: auto; font-size: 0.58rem; text-align: right; margin-bottom: 3px; padding: 2px; color: #e5e5e5; }
+        .chat-input-row { display: flex; gap: 4px; }
+        .chat-input-row input { flex: 1; padding: 3px 6px; font-size: 0.58rem; background: #081c15; border: 1px solid #2d6a4f; color: #fff; border-radius: 4px; text-align: right; }
+        .chat-input-row button { background: #d4af37; color: #0b132b; border: none; padding: 3px 8px; border-radius: 4px; font-size: 0.58rem; font-weight: bold; cursor: pointer; }
+
+        .table-center-board {
+            text-align: center; margin: 0 auto; background: rgba(11, 28, 14, 0.96);
+            padding: 8px; border-radius: 12px; border: 2px solid #d4af37;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.85); max-width: 520px; width: 100%;
+        }
+        .table-center-board h3 { color: #f4d35e; margin-bottom: 4px; font-size: 0.78rem; }
+        
+        .cards-container {
+            display: flex; justify-content: center; gap: 4px; margin: 4px 0; flex-wrap: wrap;
+        }
+        .poker-card {
+            width: 38px; height: 52px; background: linear-gradient(135deg, #ffffff 0%, #f1f1f1 100%); color: #111;
+            border-radius: 4px; display: flex; flex-direction: column; justify-content: space-between;
+            padding: 3px; font-weight: bold; font-size: 0.68rem; box-shadow: 0 2px 6px rgba(0,0,0,0.7); border: 1px solid #d4af37;
+        }
+        .poker-card.red { color: #c9184a; }
+        .card-top { align-self: flex-start; line-height: 1; }
+        .card-center { align-self: center; font-size: 0.8rem; }
+        .card-bottom { align-self: flex-end; transform: rotate(180deg); line-height: 1; }
+
+        .negotiation-status { background: rgba(20, 56, 27, 0.85); border: 1px solid #2d6a4f; padding: 4px; border-radius: 6px; color: #f4d35e; font-size: 0.65rem; margin-top: 4px; }
+        .table-actions { display: flex; justify-content: center; gap: 8px; max-width: 520px; width: 100%; margin: 4px auto 0 auto; }
+        .btn-game { background: #2d6a4f; color: #fff; border: 2px solid #d4af37; padding: 6px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.72rem; flex: 1; }
+        .btn-game:hover { background: #1b4332; }
+        .btn-logout { background: #9b2226; border-color: #bb3e03; }
+
+        .modal-overlay { display: none; fixed: top; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; justify-content: center; align-items: center; }
+        .modal-box { background: #0b1c0e; border: 3px solid #d4af37; padding: 16px; border-radius: 14px; text-align: center; width: 330px; max-height: 85vh; overflow-y: auto; }
+        .thinking-timer-box { font-size: 0.65rem; color: #e76f51; font-weight: bold; margin-top: 2px; background: rgba(0,0,0,0.5); padding: 2px; border-radius: 4px; }
+        
+        #gameLobbyScreen { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 20; justify-content: center; align-items: center; }
+        .lobby-box { text-align: center; background: rgba(11, 28, 14, 0.96); border: 3px solid #d4af37; padding: 20px; border-radius: 20px; width: 340px; box-shadow: 0 15px 35px rgba(0,0,0,0.9); }
+        .lobby-counter { font-size: 1.5rem; color: #f4d35e; font-weight: bold; margin: 10px 0; background: rgba(5, 20, 10, 0.8); border: 2px solid #2d6a4f; border-radius: 8px; padding: 6px; }
+    </style>
+</head>
+<body>
+
+    <img src="https://images.unsplash.com/photo-1511193311914-0346f16efe90?q=80&w=1920&auto=format&fit=crop" alt="Background" class="bg-image">
+    <div class="bg-overlay"></div>
+
+    <!-- نافذة تقديم المفاوضة -->
+    <div class="modal-overlay" id="offerModal" style="display: none; position: fixed;">
+        <div class="modal-box">
+            <h3>اختر قيمة المفاوضة (500 إلى 5000)</h3>
+            <select id="offerSelect"></select>
+            <button class="btn-action" onclick="confirmOffer()">تأكيد وإرسال</button>
+            <button class="btn-game btn-logout" style="width: 100%; margin-top: 6px;" onclick="closeOfferModal()">باص (انسحاب الجولة)</button>
+        </div>
+    </div>
+
+    <!-- نافذة غرف الأصدقاء ومفاوضتهم -->
+    <div class="modal-overlay" id="friendsRoomModal" style="display: none; position: fixed;">
+        <div class="friends-room-box">
+            <h3 style="color: #f4d35e; margin-bottom: 8px;">👥 غرفة الأصدقاء الخاصة</h3>
+            <p style="font-size: 0.75rem; color: #90be6d; margin-bottom: 6px;">كود الغرفة المكون من 6 أرقام:</p>
+            <div class="room-code-display" id="roomCodeDisplay">784291</div>
+            
+            <div class="input-group">
+                <label>اختر صديق لإعطائه هدية:</label>
+                <select id="giftFriendSelect">
+                    <option value="كريم المصري">كريم المصري</option>
+                    <option value="محمود الصاوي">محمود الصاوي</option>
+                    <option value="إسلام الباشا">إسلام الباشا</option>
+                    <option value="أحمد سامح">أحمد سامح</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>قيمة الهدية:</label>
+                <select id="giftAmountSelect">
+                    <option value="1000">1,000 🪙</option>
+                    <option value="2500">2,500 🪙</option>
+                    <option value="5000">5,000 🪙</option>
+                    <option value="10000">10,000 🪙</option>
+                </select>
+            </div>
+
+            <button class="btn-action" onclick="sendFriendGift()">🎁 إرسال الهدية ومفاوضة الصديق</button>
+            <button class="btn-game btn-logout" style="width: 100%; margin-top: 6px;" onclick="closeFriendsRoomModal()">رجوع للقائمة</button>
+        </div>
+    </div>
+
+    <!-- نافذة متجر الشحن -->
+    <div class="modal-overlay" id="storeModal" style="display: none; position: fixed;">
+        <div class="store-modal-box">
+            <div class="store-title">🏛️ متجر الشحن</div>
+            <div class="vodafone-box">
+                <span>فودافون كاش:</span>
+                <strong>01044631863</strong>
+                <p>حول القيمة واجعل إيصال التحويل ظاهراً للإدارة</p>
+            </div>
+
+            <div class="packages-grid">
+                <div class="package-card selected-pkg" onclick="selectPackage(this, 'برونزية', '50 جـ', 10000)">
+                    <h4>برونزية</h4>
+                    <p>🪙 10k+</p>
+                    <span>50 جـ</span>
+                </div>
+                <div class="package-card" onclick="selectPackage(this, 'فضية', '200 جـ', 50000)">
+                    <h4>فضية</h4>
+                    <p>🪙 50k+</p>
+                    <span>200 جـ</span>
+                </div>
+                <div class="package-card" onclick="selectPackage(this, 'ذهبية', '500 جـ', 150000)">
+                    <h4>ذهبية</h4>
+                    <p>🪙 150k+</p>
+                    <span>500 جـ</span>
+                </div>
+                <div class="package-card" onclick="selectPackage(this, 'الملوك', '1500 جـ', 500000)">
+                    <h4>الملوك</h4>
+                    <p>🪙 500k+</p>
+                    <span>1500 جـ</span>
+                </div>
+            </div>
+
+            <div class="upload-section">
+                <label>📎 اختر الباقة وارفع إيصال التحويل:</label>
+                <input type="file" id="receiptFile" accept="image/*">
+            </div>
+
+            <button class="btn-action" onclick="submitStoreRequest()">إرسال للإدارة</button>
+            <button class="btn-game btn-logout" style="width: 100%; margin-top: 6px;" onclick="closeStoreModal()">الرجوع</button>
+        </div>
+    </div>
+
+    <!-- لوحة تحكم الأدمن -->
+    <div class="modal-overlay" id="adminModal" style="display: none; position: fixed;">
+        <div class="admin-modal-box">
+            <div class="admin-title">👑 لوحة تحكم الأدمن</div>
+            
+            <div class="admin-section-title">📦 طلبات الشحن المعلقة:</div>
+            <div class="pending-orders-box" id="adminPendingOrdersContainer">
+                <div class="pending-empty">لا توجد طلبات شحن معلقة حالياً.</div>
+            </div>
+
+            <div class="admin-section-title" style="margin-top: 10px;">👥 إدارة اللاعبين (البحث والحظر):</div>
+            <input type="text" class="admin-users-search" id="adminUserSearchInput" placeholder="ابحث باسم اللاعب..." oninput="filterAdminUsers()">
+            
+            <div id="adminUsersListContainer" style="max-height: 140px; overflow-y: auto; margin-bottom: 8px;">
+                <div class="admin-user-card">
+                    <div class="admin-user-info">
+                        <h4 id="adminUserNameDisplay">يسشيب</h4>
+                        <p>الرصيد: 20,000 | <span style="color: #90be6d;">نشط</span></p>
+                    </div>
+                    <button class="btn-ban" onclick="toggleBanUser(this, 'يسشيب')">حظر (أبلك)</button>
+                </div>
+            </div>
+
+            <button class="btn-action" style="background-color: #9b2226; color: #fff; margin-top: 6px;" onclick="closeAdminModal()">الرجوع للقائمة</button>
+        </div>
+    </div>
+
+    <!-- نافذة إعلان الفائز وأعلى مراهن وتوزيع الأرباح على الصحاب -->
+    <div class="modal-overlay" id="winnerRevealModal" style="display: none; position: fixed;">
+        <div class="modal-box">
+            <h3 id="winnerRevealTitle">🏆 إعلان الفائز وأعلى مراهن</h3>
+            <p id="winnerRevealText" style="color: #90be6d; font-size: 0.75rem; margin-bottom: 6px;"></p>
+            
+            <div class="input-group" style="margin-bottom: 6px;">
+                <label style="font-size: 0.72rem; color: #f4d35e;">👑 أعلى مراهن يحق له التوزيع على صحابه:</label>
+                <select id="highestBidderDistributeSelect" style="font-size: 0.75rem; padding: 4px;">
+                    <option value="كريم المصري">كريم المصري</option>
+                    <option value="محمود الصاوي">محمود الصاوي</option>
+                    <option value="إسلام الباشا">إسلام الباشا</option>
+                </select>
+            </div>
+            
+            <div class="cards-container" id="revealCardsContainer" style="justify-content: center; margin-bottom: 6px;"></div>
+            <button class="btn-action" onclick="closeWinnerModal()">تأكيد وتوزيع ورق جديد (تلميع)</button>
+        </div>
+    </div>
+
+    <!-- شاشة تسجيل الدخول -->
+    <div class="screen-box" id="authContainer">
+        <div class="logo-area">
+            <h1>مفاوضة Pro</h1>
+            <p>إشراف: Eng : Samir m7med</p>
+        </div>
+        <div class="tabs">
+            <button class="tab-btn active" id="loginTab" onclick="switchMode('login')">تسجيل دخول</button>
+            <button class="tab-btn" id="registerTab" onclick="switchMode('register')">حساب جديد</button>
+        </div>
+        <div class="input-group"><label>Username:</label><input type="text" id="username" placeholder="Username..."></div>
+        <div class="input-group"><label>Password:</label><input type="password" id="password" placeholder="Password..."></div>
+        
+        <div class="input-group" id="avatarGroup" style="display: none;">
+            <label style="text-align: left;">Avatar:</label>
+            <div class="avatar-selection">
+                <div class="avatar-option selected" onclick="selectAvatar('🦁', this)">🦁</div>
+                <div class="avatar-option" onclick="selectAvatar('🦅', this)">🦅</div>
+                <div class="avatar-option" onclick="selectAvatar('🦊', this)">🦊</div>
+                <div class="avatar-option" onclick="selectAvatar('🤖', this)">🤖</div>
+                <div class="avatar-option" onclick="selectAvatar('🤠', this)">🤠</div>
+            </div>
+        </div>
+        <button class="btn-action" onclick="handleAuth()">دخول اللعبة</button>
+    </div>
+
+    <!-- القائمة الرئيسية -->
+    <div class="screen-box" id="mainMenuScreen" style="display: none;">
+        <div class="logo-area">
+            <h1>قائمة اللعبة</h1>
+        </div>
+        <div class="user-profile-card">
+            <div class="user-profile-info">
+                <div class="profile-avatar-container"><span id="menuProfileAvatar">🦁</span></div>
+                <div>
+                    <h3 id="menuProfileName">يسشيب</h3>
+                    <p>الرصيد: <span id="menuProfileBalance">20,000</span> 🪙</p>
+                </div>
+            </div>
+            <button class="btn-edit-profile" onclick="editProfileName()">تعديل</button>
+        </div>
+
+        <div class="friends-section">
+            <div class="friends-title">👥 الأصدقاء أونلاين:</div>
+            <div class="friend-row">
+                <div class="friend-info">
+                    <span>كريم المصري</span>
+                    <span class="friend-status" style="color: #f4d35e;">متواجد</span>
+                </div>
+                <button class="btn-invite" onclick="alert('تم إرسال دعوة إلى كريم المصري!')">دعوة</button>
+            </div>
+            <div class="friend-row" style="margin-top: 4px;">
+                <div class="friend-info">
+                    <span>محمود الصاوي</span>
+                    <span class="friend-status" style="color: #e76f51;">يلعب</span>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-action" onclick="startRandomGame()">🎲 لاعبين عشوائيين</button>
+        <button class="btn-menu-option" style="background-color: #52b788;" onclick="openFriendsRoomModal()">👥 غرف الأصدقاء (بـ 6 أرقام)</button>
+        <button class="btn-menu-option" style="background-color: #7b2cbf;" onclick="openStoreModal()">🛒 متجر الشحن</button>
+        <button class="btn-menu-option" style="background-color: #1d3557;" onclick="alert('قريباً: لوحة المتصدرين!')">🏆 لوحة المتصدرين</button>
+        
+        <div id="adminButtonWrapper" style="margin-top: 6px; display: none;">
+            <button class="btn-action" style="background-color: #d90429; color: #fff;" onclick="openAdminModal()">🛠️ لوحة الأدمن (Eng : Samir m7med)</button>
+        </div>
+
+        <button class="btn-action btn-logout" style="background-color: #9b2226; color: #fff; margin-top: 6px;" onclick="logoutToAuth()">تسجيل خروج</button>
+    </div>
+
+    <!-- لوبي التحميل -->
+    <div id="gameLobbyScreen" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 20; justify-content: center; align-items: center;">
+        <div class="lobby-box">
+            <h2 style="color: #f4d35e; margin-bottom: 8px; font-size: 1.1rem;">جاري تلميع الورق وتوزيع توزيعة جديدة...</h2>
+            <div class="lobby-counter">6 / 6</div>
+            <p style="color: #fff; font-size: 0.75rem;">توزيع 8 ورقات لكل لاعب ومفاوضة واحدة لكل توزيعة</p>
+        </div>
+    </div>
+
+    <!-- شاشة اللعب الرئيسية -->
+    <div id="gameTableScreen">
+        <div class="table-header">
+            <div class="player-info-card">
+                <div class="player-avatar-box" id="displayAvatar">🦁</div>
+                <div class="player-details">
+                    <h3 id="displayName">يسشيب</h3>
+                    <p>الرصيد: <span id="displayBalance">20,000</span> 🪙</p>
+                </div>
+            </div>
+            <div><button class="btn-game btn-logout" style="padding: 4px 10px; font-size: 0.65rem;" onclick="leaveTableWithPenalty()">انسحاب (-10k)</button></div>
+        </div>
+
+        <div class="video-grid-container" id="videoGridContainer"></div>
+
+        <div class="table-chat-box">
+            <div class="chat-messages" id="tableChatMessages">
+                <div><strong>النظام:</strong> تم توزيع 8 ورقات لكل لاعب. أعلى مراهن يحصل على حق توزيع الدعم على أصحابه!</div>
+            </div>
+            <div class="chat-input-row">
+                <input type="text" id="chatInputText" placeholder="اكتب رسالتك..." onkeypress="handleChatKeyPress(event)">
+                <button onclick="sendChatMessage()">إرسال</button>
+            </div>
+        </div>
+
+        <div class="table-center-board">
+            <h3 id="tableStatusMainHeading">الدور الحالي: اللاعب رقم 1</h3>
+            <div class="thinking-timer-box" id="thinkingTimerDisplay">⏳ وقت التفكير المتبقي: 15 ثانية</div>
+            <div class="cards-container" id="myHandCardsContainer"></div>
+            <div class="negotiation-status">
+                حالة التفاوض: <span id="negotiationText">العرض الحالي: 0 🪙 (مفاوضة واحدة للجولة)</span>
+            </div>
+        </div>
+
+        <div class="table-actions">
+            <button class="btn-game" id="proposeBtn" onclick="openOfferModal()">تقديم مفاوضة (زيادة)</button>
+            <button class="btn-game btn-logout" onclick="passTurn()">باص (انسحاب الجولة)</button>
+        </div>
+    </div>
+
+    <script>
+        let currentMode = 'login';
+        let selectedAvatarIcon = '🦁';
+        let selectedPackageName = 'برونزية';
+        let selectedPackageCoins = 10000;
+        
+        let currentUser = {
+            name: "يسشيب",
+            balance: 20000,
+            avatar: "🦁",
+            cards: [],
+            isAdmin: false,
+            cameraActive: false,
+            micActive: true,
+            isMutedByAdmin: false,
+            stream: null
+        };
+
+        let pendingStoreOrders = [];
+        let currentHighestOffer = 0;
+        let highestBidderPlayerName = "لا أحد";
+        let gameDeck = [];
+        let playersTable = [];
+        let currentTurnIndex = 0;
+        let thinkingTimeLeft = 15;
+        let thinkingTimerInterval = null;
+        let negotiationRoundTurnsCount = 0;
+
+        const rankHierarchy = { '4': 1, '5': 2, '6': 3, '7': 4, '8': 5, '9': 6, '10': 7, 'K': 8, 'Q': 9, 'J': 10, 'A': 11 };
+
+        function createDeck() {
+            const suits = ['♠', '♣', '♥', '♦'];
+            const values = ['4', '5', '6', '7', '8', '9', '10', 'K', 'Q', 'J', 'A'];
+            let deck = [];
+            for(let s of suits) {
+                for(let v of values) {
+                    deck.push({ value: v, suit: s, red: (s === '♥' || s === '♦') });
+                }
+            }
+            return deck.sort(() => Math.random() - 0.5);
+        }
+
+        function selectAvatar(icon, element) {
+            selectedAvatarIcon = icon;
+            document.querySelectorAll('.avatar-option').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        function selectPackage(element, pkgName, pkgPrice, coinsCount) {
+            selectedPackageName = pkgName;
+            selectedPackageCoins = coinsCount;
+            document.querySelectorAll('.package-card').forEach(el => el.classList.remove('selected-pkg'));
+            element.classList.add('selected-pkg');
+        }
+
+        function switchMode(mode) {
+            currentMode = mode;
+            document.getElementById('loginTab').classList.toggle('active', mode === 'login');
+            document.getElementById('registerTab').classList.toggle('active', mode === 'register');
+            document.getElementById('avatarGroup').style.display = mode === 'login' ? 'none' : 'block';
+        }
+
+        function handleAuth() {
+            let username = document.getElementById('username').value.trim();
+            if(username) currentUser.name = username;
+            currentUser.avatar = selectedAvatarIcon;
+
+            if(username.toLowerCase().includes('samir') || username === 'Eng : Samir m7med' || username === 'admin') {
+                currentUser.isAdmin = true;
+                currentUser.name = "Eng : Samir m7med";
+                document.getElementById('adminButtonWrapper').style.display = 'block';
+            } else {
+                currentUser.isAdmin = false;
+                document.getElementById('adminButtonWrapper').style.display = 'none';
+            }
+
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('mainMenuScreen').style.display = 'block';
+            document.getElementById('menuProfileName').innerText = currentUser.name;
+            document.getElementById('menuProfileBalance').innerText = currentUser.balance.toLocaleString();
+            document.getElementById('menuProfileAvatar').innerText = currentUser.avatar;
+            document.getElementById('adminUserNameDisplay').innerText = currentUser.name;
+        }
+
+        function editProfileName() {
+            let newName = prompt("أدخل الاسم الجديد:", currentUser.name);
+            if(newName && newName.trim() !== "") {
+                currentUser.name = newName.trim();
+                document.getElementById('menuProfileName').innerText = currentUser.name;
+                document.getElementById('adminUserNameDisplay').innerText = currentUser.name;
+            }
+        }
+
+        function openFriendsRoomModal() {
+            let randomCode = Math.floor(100000 + Math.random() * 900000);
+            document.getElementById('roomCodeDisplay').innerText = randomCode;
+            document.getElementById('friendsRoomModal').style.display = 'flex';
+        }
+
+        function closeFriendsRoomModal() {
+            document.getElementById('friendsRoomModal').style.display = 'none';
+        }
+
+        function sendFriendGift() {
+            let friendName = document.getElementById('giftFriendSelect').value;
+            let giftAmount = parseInt(document.getElementById('giftAmountSelect').value);
+
+            if(currentUser.balance < giftAmount) {
+                alert('⚠️ عذراً، رصيدك الحالي لا يكفي لإرسال هذه الهدية!');
+                return;
+            }
+
+            currentUser.balance -= giftAmount;
+            document.getElementById('menuProfileBalance').innerText = currentUser.balance.toLocaleString();
+            alert(`🎁 تم بنجاح تحويل هدية بقيمة ${giftAmount.toLocaleString()} 🪙 لصديقك "${friendName}" في الغرفة!`);
+            closeFriendsRoomModal();
+            startRandomGame();
+        }
+
+        function startRandomGame() {
+            document.getElementById('mainMenuScreen').style.display = 'none';
+            document.getElementById('gameLobbyScreen').style.display = 'flex';
+            setTimeout(() => {
+                document.getElementById('gameLobbyScreen').style.display = 'none';
+                document.getElementById('gameTableScreen').style.display = 'flex';
+                initGameSession();
+            }, 1500);
+        }
+
+        function sortPlayerHand(cards) {
+            let counts = {};
+            cards.forEach(c => counts[c.value] = (counts[c.value] || 0) + 1);
+            return cards.sort((a, b) => {
+                let countDiff = counts[b.value] - counts[a.value];
+                if (countDiff !== 0) return countDiff;
+                return rankHierarchy[b.value] - rankHierarchy[a.value];
+            });
+        }
+
+        function initGameSession() {
+            gameDeck = createDeck();
+            
+            playersTable = [
+                { id: 1, name: currentUser.name, avatar: currentUser.avatar, team: 1, cards: [], isUser: true, cameraActive: false, micActive: true, muted: false },
+                { id: 4, name: "كريم المصري", avatar: "🦅", team: 2, cards: [], isUser: false, cameraActive: false, micActive: true, muted: false },
+                { id: 5, name: "محمود الصاوي", avatar: "🤖", team: 1, cards: [], isUser: false, cameraActive: false, micActive: true, muted: false },
+                { id: 3, name: "إسلام الباشا", avatar: "🤠", team: 2, cards: [], isUser: false, cameraActive: false, micActive: true, muted: false },
+                { id: 2, name: "أحمد سامح", avatar: "🦊", team: 1, cards: [], isUser: false, cameraActive: false, micActive: true, muted: false },
+                { id: 6, name: "محمد الجوهري", avatar: "🐯", team: 2, cards: [], isUser: false, cameraActive: false, micActive: true, muted: false }
+            ];
+
+            for(let p of playersTable) {
+                let rawCards = [];
+                for(let i = 0; i < 8; i++) {
+                    rawCards.push(gameDeck.pop());
+                }
+                p.cards = sortPlayerHand(rawCards);
+                if(p.isUser) currentUser.cards = p.cards;
+            }
+
+            currentTurnIndex = 0;
+            currentHighestOffer = 0;
+            highestBidderPlayerName = "لا أحد (بدون مزايدة)";
+            negotiationRoundTurnsCount = 0;
+
+            updateTableUI();
+            populateOfferSelect();
+            startThinkingTimer();
+        }
+
+        function startThinkingTimer() {
+            clearInterval(thinkingTimerInterval);
+            thinkingTimeLeft = 15; 
+            document.getElementById('thinkingTimerDisplay').innerText = `⏳ وقت التفكير المتبقي: ${thinkingTimeLeft} ثانية`;
+            
+            thinkingTimerInterval = setInterval(() => {
+                thinkingTimeLeft--;
+                document.getElementById('thinkingTimerDisplay').innerText = `⏳ وقت التفكير المتبقي: ${thinkingTimeLeft} ثانية`;
+                if(thinkingTimeLeft <= 0) {
+                    clearInterval(thinkingTimerInterval);
+                    passTurn();
+                }
+            }, 1000);
+        }
+
+        function populateOfferSelect(minVal = 500) {
+            let select = document.getElementById('offerSelect');
+            select.innerHTML = '';
+            for(let i = minVal; i <= 5000; i += 500) {
+                let opt = document.createElement('option');
+                opt.value = i;
+                opt.innerText = i.toLocaleString() + ' 🪙';
+                select.appendChild(opt);
+            }
+        }
+
+        function updateTableUI() {
+            let grid = document.getElementById('videoGridContainer');
+            grid.innerHTML = '';
+
+            playersTable.forEach((p, idx) => {
+                let activeBorder = (idx === currentTurnIndex) ? 'border: 2px solid #f4d35e;' : '';
+                let micStatus = p.muted ? '🔇 ميوت' : (p.micActive ? '🎙️ متاح' : '🔇 مقفل');
+                let muteButtonHtml = (currentUser.isAdmin || p.isUser) ? `<button class="media-btn" onclick="togglePlayerMute(${idx})" style="background: ${p.muted ? '#9b2226' : '#2d6a4f'}">${p.muted ? 'إلغاء' : 'ميوت'}</button>` : '';
+
+                grid.innerHTML += `
+                    <div class="video-box" style="${activeBorder}">
+                        <div class="media-controls-overlay">
+                            <button class="media-btn ${p.cameraActive ? 'active-cam' : ''}" onclick="toggleCamera(${idx})">📷</button>
+                            <button class="media-btn ${p.micActive && !p.muted ? 'active-mic' : 'muted-mic'}" onclick="toggleMic(${idx})">🎙️</button>
+                            ${muteButtonHtml}
+                        </div>
+                        <video id="vid_${idx}" autoplay playsinline muted></video>
+                        <div class="cam-placeholder" style="display: ${p.cameraActive ? 'none' : 'block'};">${p.avatar}</div>
+                        <div class="cam-name-tag">${p.name} (${micStatus})</div>
+                    </div>
+                `;
+            });
+
+            playersTable.forEach((p, idx) => {
+                if(p.cameraActive && p.stream) {
+                    let vElem = document.getElementById(`vid_${idx}`);
+                    if(vElem) {
+                        vElem.srcObject = p.stream;
+                        vElem.style.display = 'block';
+                    }
+                }
+            });
+
+            let myHand = document.getElementById('myHandCardsContainer');
+            myHand.innerHTML = '';
+            if(currentUser.cards) {
+                currentUser.cards.forEach(c => {
+                    myHand.innerHTML += `
+                        <div class="poker-card ${c.red ? 'red' : ''}">
+                            <span class="card-top">${c.value}${c.suit}</span>
+                            <span class="card-center">${c.suit}</span>
+                            <span class="card-bottom">${c.value}${c.suit}</span>
+                        </div>
+                    `;
+                });
+            }
+
+            document.getElementById('displayName').innerText = currentUser.name;
+            document.getElementById('displayBalance').innerText = currentUser.balance.toLocaleString();
+            document.getElementById('displayAvatar').innerText = currentUser.avatar;
+            document.getElementById('negotiationText').innerText = `العرض الحالي: ${currentHighestOffer} 🪙 | أعلى مراهن: ${highestBidderPlayerName}`;
+            document.getElementById('tableStatusMainHeading').innerText = `الدور الحالي: ${playersTable[currentTurnIndex].name}`;
+        }
+
+        async function toggleCamera(playerIdx) {
+            let p = playersTable[playerIdx];
+            if(!p.isUser && !currentUser.isAdmin) {
+                alert('يمكنك التحكم بكاميرتك فقط!');
+                return;
+            }
+
+            if(!p.cameraActive) {
+                try {
+                    let mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                    p.stream = mediaStream;
+                    p.cameraActive = true;
+                    if(p.isUser) currentUser.stream = mediaStream;
+                } catch(err) {
+                    alert('⚠️ تعذر تشغيل الكاميرا، تأكد من إعطاء الصلاحيات.');
+                    return;
+                }
+            } else {
+                if(p.stream) {
+                    p.stream.getTracks().forEach(track => track.stop());
+                }
+                p.cameraActive = false;
+                p.stream = null;
+            }
+            updateTableUI();
+        }
+
+        function toggleMic(playerIdx) {
+            let p = playersTable[playerIdx];
+            p.micActive = !p.micActive;
+            updateTableUI();
+        }
+
+        function togglePlayerMute(playerIdx) {
+            let p = playersTable[playerIdx];
+            p.muted = !p.muted;
+            if(p.muted) p.micActive = false;
+            else p.micActive = true;
+            updateTableUI();
+        }
+
+        function evaluateHand(cards) {
+            let counts = {};
+            cards.forEach(c => counts[c.value] = (counts[c.value] || 0) + 1);
+
+            let quads = [], trips = [], pairs = [];
+            for(let val in counts) {
+                if(counts[val] === 4) quads.push(val);
+                else if(counts[val] === 3) trips.push(val);
+                else if(counts[val] === 2) pairs.push(val);
+            }
+
+            if(quads.length > 0) return { score: 3000 + Math.max(...quads.map(v => rankHierarchy[v])), desc: 'رباعية (Quads)' };
+            if(trips.length > 0) return { score: 2000 + Math.max(...trips.map(v => rankHierarchy[v])), desc: 'ثلاثية (Trips)' };
+            if(pairs.length > 0) return { score: 1000 + Math.max(...pairs.map(v => rankHierarchy[v])), desc: 'ثنائية (Pairs)' };
+
+            return { score: Math.max(...cards.map(c => rankHierarchy[c.value])), desc: 'ورقة عالية' };
+        }
+
+        function evaluateRoundWinner() {
+            let bestPlayer = playersTable[0];
+            let bestEval = evaluateHand(bestPlayer.cards);
+
+            for(let i = 1; i < playersTable.length; i++) {
+                let pEval = evaluateHand(playersTable[i].cards);
+                if(pEval.score > bestEval.score) {
+                    bestEval = pEval;
+                    bestPlayer = playersTable[i];
+                }
+            }
+            showWinnerReveal(bestPlayer, bestEval);
+        }
+
+        function showWinnerReveal(player, evaluation) {
+            clearInterval(thinkingTimerInterval);
+            document.getElementById('winnerRevealTitle').innerText = `🏆 الفائز: ${player.name} (${evaluation.desc})`;
+            document.getElementById('winnerRevealText').innerText = `أعلى مراهن في الجولة هو "${highestBidderPlayerName}"، وله الحق الآن في توزيع الدعم على صحابه!`;
+
+            // ملء قائمة اختيار الصحاب لأعلى مراهن
+            let selectBox = document.getElementById('highestBidderDistributeSelect');
+            selectBox.innerHTML = '';
+            playersTable.forEach(p => {
+                let opt = document.createElement('option');
+                opt.value = p.name;
+                opt.innerText = p.name;
+                selectBox.appendChild(opt);
+            });
+            selectBox.value = highestBidderPlayerName !== "لا أحد (بدون مزايدة)" ? highestBidderPlayerName : player.name;
+
+            let container = document.getElementById('revealCardsContainer');
+            container.innerHTML = '';
+            sortPlayerHand([...player.cards]).forEach(c => {
+                container.innerHTML += `
+                    <div class="poker-card ${c.red ? 'red' : ''}">
+                        <span class="card-top">${c.value}${c.suit}</span>
+                        <span class="card-center">${c.suit}</span>
+                        <span class="card-bottom">${c.value}${c.suit}</span>
+                    </div>
+                `;
+            });
+            document.getElementById('winnerRevealModal').style.display = 'flex';
+        }
+
+        function closeWinnerModal() {
+            let chosenDistributor = document.getElementById('highestBidderDistributeSelect').value;
+            alert(`🎁 قام أعلى مراهن (${chosenDistributor}) بتوزيع الدعم والهدايا على الصحاب في الطاولة بنجاح!`);
+            document.getElementById('winnerRevealModal').style.display = 'none';
+            initGameSession(); // تلميع الورق وتوزيع ورق جديد بالكامل
+        }
+
+        function openOfferModal() {
+            let me = playersTable[currentTurnIndex];
+            if(!me.isUser) { alert('ليس دورك الآن!'); return; }
+            let nextMin = currentHighestOffer === 0 ? 500 : currentHighestOffer + 500;
+            if(nextMin > 5000) nextMin = 5000;
+            populateOfferSelect(nextMin);
+            document.getElementById('offerModal').style.display = 'flex';
+        }
+
+        function closeOfferModal() { document.getElementById('offerModal').style.display = 'none'; }
+
+        function confirmOffer() {
+            let val = parseInt(document.getElementById('offerSelect').value);
+            currentHighestOffer = val;
+            highestBidderPlayerName = playersTable[currentTurnIndex].name;
+            closeOfferModal();
+            handleTurnProgression();
+        }
+
+        function passTurn() {
+            handleTurnProgression();
+        }
+
+        function handleTurnProgression() {
+            clearInterval(thinkingTimerInterval);
+            negotiationRoundTurnsCount++;
+
+            if (negotiationRoundTurnsCount >= playersTable.length || currentHighestOffer >= 5000) {
+                evaluateRoundWinner();
+            } else {
+                currentTurnIndex = (currentTurnIndex + 1) % playersTable.length;
+                updateTableUI();
+                startThinkingTimer();
+
+                if(!playersTable[currentTurnIndex].isUser) {
+                    setTimeout(botPlay, 1000);
+                }
+            }
+        }
+
+        function botPlay() {
+            let bot = playersTable[currentTurnIndex];
+            let increment = currentHighestOffer === 0 ? 500 : currentHighestOffer + 500;
+            if(increment <= 5000 && Math.random() > 0.4) {
+                currentHighestOffer = increment;
+                highestBidderPlayerName = bot.name;
+            }
+            handleTurnProgression();
+        }
+
+        function openStoreModal() { document.getElementById('storeModal').style.display = 'flex'; }
+        function closeStoreModal() { document.getElementById('storeModal').style.display = 'none'; }
+        
+        function submitStoreRequest() {
+            let fileInput = document.getElementById('receiptFile');
+            if(fileInput.files.length === 0) {
+                alert('⚠️ برجاء اختيار ورفع إيصال التحويل أولاً!');
+                return;
+            }
+            let file = fileInput.files[0];
+            let imageUrl = URL.createObjectURL(file);
+
+            pendingStoreOrders.push({
+                username: currentUser.name,
+                packageName: selectedPackageName,
+                coins: selectedPackageCoins,
+                imageUrl: imageUrl
+            });
+
+            alert(`✅ تم إرسال طلب شحن باقة "${selectedPackageName}" وإيصال التحويل بنجاح للإدارة!`);
+            closeStoreModal();
+        }
+
+        function openAdminModal() {
+            updateAdminPendingOrdersUI();
+            document.getElementById('adminModal').style.display = 'flex';
+        }
+        
+        function closeAdminModal() { document.getElementById('adminModal').style.display = 'none'; }
+
+        function updateAdminPendingOrdersUI() {
+            let container = document.getElementById('adminPendingOrdersContainer');
+            if(pendingStoreOrders.length === 0) {
+                container.innerHTML = `<div class="pending-empty">لا توجد طلبات شحن معلقة حالياً.</div>`;
+                return;
+            }
+            container.innerHTML = '';
+            pendingStoreOrders.forEach((order, index) => {
+                container.innerHTML += `
+                    <div style="background: rgba(11,28,14,0.95); border: 1px solid #d4af37; padding: 6px; border-radius: 6px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem;">
+                        <span style="color: #f4d35e;">${order.username} - ${order.packageName} (${order.coins} 🪙)</span>
+                        <div style="display: flex; gap: 4px;">
+                            <button class="btn-game" style="background: #2d6a4f; padding: 2px 8px; font-size: 0.65rem;" onclick="approveOrder(${index})">موافقة</button>
+                            <button class="btn-game btn-logout" style="padding: 2px 8px; font-size: 0.65rem;" onclick="rejectOrder(${index})">رفض</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function approveOrder(index) {
+            let order = pendingStoreOrders[index];
+            currentUser.balance += order.coins;
+            document.getElementById('menuProfileBalance').innerText = currentUser.balance.toLocaleString();
+            alert(`✅ تم الموافقة وشحن ${order.coins.toLocaleString()} عملة للاعب ${order.username}!`);
+            pendingStoreOrders.splice(index, 1);
+            updateAdminPendingOrdersUI();
+        }
+
+        function rejectOrder(index) {
+            alert('❌ تم رفض طلب الشحن.');
+            pendingStoreOrders.splice(index, 1);
+            updateAdminPendingOrdersUI();
+        }
+
+        function filterAdminUsers() {
+            let query = document.getElementById('adminUserSearchInput').value.toLowerCase();
+            let cards = document.querySelectorAll('.admin-user-card');
+            cards.forEach(card => {
+                let name = card.querySelector('h4').innerText.toLowerCase();
+                card.style.display = name.includes(query) ? 'flex' : 'none';
+            });
+        }
+
+        function toggleBanUser(btnElement, username) {
+            if(btnElement.classList.contains('banned')) {
+                btnElement.classList.remove('banned');
+                btnElement.innerText = "حظر (أبلك)";
+            } else {
+                btnElement.classList.add('banned');
+                btnElement.innerText = "إلغاء الحظر";
+                alert(`⚠️ تم حظر اللاعب ${username}!`);
+            }
+        }
+
+        function sendChatMessage() {
+            let input = document.getElementById('chatInputText');
+            let msg = input.value.trim();
+            if(!msg) return;
+            let chatBox = document.getElementById('tableChatMessages');
+            chatBox.innerHTML += `<div><strong>${currentUser.name}:</strong> ${msg}</div>`;
+            input.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function handleChatKeyPress(e) { if(e.key === 'Enter') sendChatMessage(); }
+        function logoutToAuth() { document.getElementById('mainMenuScreen').style.display = 'none'; document.getElementById('authContainer').style.display = 'block'; }
+        function leaveTableWithPenalty() {
+            if(confirm('هل أنت متأكد من الانسحاب؟ سيتم خصم 10,000 نقطة.')) {
+                currentUser.balance -= 10000;
+                document.getElementById('gameTableScreen').style.display = 'none';
+                document.getElementById('mainMenuScreen').style.display = 'block';
+                document.getElementById('menuProfileBalance').innerText = currentUser.balance.toLocaleString();
+            }
+        }
+    </script>
+</body>
+</html>
